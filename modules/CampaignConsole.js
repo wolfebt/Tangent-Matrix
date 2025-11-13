@@ -14,9 +14,9 @@ export function init() {
     const consoleHtml = `
         <div id="campaign-console" style="color: #fff; padding: 10px;">
             <h4>Campaign Console</h4>
-            <textarea
-                id="adventure-json"
-                placeholder='Paste Adventure JSON here...'
+            <textarea 
+                id="adventure-json" 
+                placeholder='Paste Adventure JSON here...' 
                 style="width: 95%; height: 100px; background-color: #333; color: #eee; border: 1px solid #555;"></textarea>
             <button id="load-adventure" style="margin-top: 5px;">Load Adventure</button>
             <div id="adventure-tree" style="margin-top: 10px; max-height: 40vh; overflow-y: auto;"></div>
@@ -34,7 +34,7 @@ export function init() {
 function buildTree() {
     const jsonText = document.getElementById('adventure-json').value;
     const treeContainer = document.getElementById('adventure-tree');
-
+    
     if (!jsonText) {
         treeContainer.innerHTML = '<p style="color: #f00;">Textarea is empty.</p>';
         return;
@@ -64,7 +64,7 @@ function renderCampaign(campaign) {
     if (campaign.worldMap) {
         html += ` <button class="set-map-btn" data-url="${campaign.worldMap}">Show World Map</button>`;
     }
-
+    
     if (campaign.areas && campaign.areas.length > 0) {
         html += `<ul>`;
         campaign.areas.forEach(area => {
@@ -83,7 +83,7 @@ function renderCampaign(campaign) {
         });
         html += `</ul>`;
     }
-
+    
     html += `</li></ul>`;
     return html;
 }
@@ -97,7 +97,7 @@ function attachTreeEventListeners() {
         button.addEventListener('click', (e) => {
             const url = e.target.dataset.url;
             if (url) {
-                const event = new CustomEvent('vttSetMap', {
+                const event = new CustomEvent('vttSetMap', { 
                     detail: { url },
                     bubbles: true // Ensure the event bubbles up to the window
                 });
