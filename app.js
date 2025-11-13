@@ -45,11 +45,6 @@ async function loadModules(activeModules = []) {
 async function init() {
     // Initialize Firebase
     const firebaseInstances = await firebase.initFirebase();
-    if (!firebaseInstances.auth) {
-        console.error("Application cannot start without Firebase.");
-        document.body.innerHTML = "Error: Could not connect to the backend. Please try again later.";
-        return;
-    }
     db = firebaseInstances.db;
     auth = firebaseInstances.auth;
     userId = firebaseInstances.userId;
@@ -70,6 +65,21 @@ async function init() {
  * Checks the URL hash to determine whether to create a new game or join an existing one.
  */
 async function handleUrlSession() {
+    // OFFLINE MODE HANDLING
+    if (!db) {
+        console.warn("Offline mode: Using a default local game state.");
+        currentGameId = 'offline-game';
+        currentGameState = {
+            mapUrl: null,
+            tokens: [],
+            activeModules: ["CampaignConsole"],
+        };
+        canvasManager.render(currentGameState);
+        loadModules(currentGameState.activeModules);
+        return;
+    }
+
+    // ONLINE MODE (original logic)
     const gameIdFromHash = window.location.hash.substring(1);
 
     if (unsubscribeFromGame) {
@@ -83,20 +93,16 @@ async function handleUrlSession() {
             if (newGameState) {
                 currentGameState = newGameState;
                 canvasManager.render(currentGameState);
-                // Dynamically load modules based on game state
                 loadModules(currentGameState.activeModules);
             } else {
-                // Handle the case where the game ID is invalid or the game is deleted
                 console.error(`Game with ID ${currentGameId} not found.`);
-                window.location.hash = ''; // Clear the invalid hash
-                handleUrlSession(); // Attempt to create a new game
+                window.location.hash = '';
+                handleUrlSession();
             }
         });
     } else {
-        // No game ID in hash, so create a new one
         const newGameId = await firebase.createGame(db, userId);
         window.location.hash = '#' + newGameId;
-        // The hash change will trigger a re-evaluation, which will then subscribe.
     }
 }
 
@@ -120,13 +126,23 @@ function attachEventListeners() {
     const mapUpload = document.getElementById('map-upload');
     mapUpload.addEventListener('change', async (e) => {
         const file = e.target.files[0];
-        if (file && currentGameId) {
-            try {
-                const mapUrl = await firebase.uploadFile(file, userId);
-                await firebase.updateGame(db, currentGameId, { mapUrl });
-            } catch (error) {
-                console.error("Error uploading map:", error);
-            }
+        if (!file || !currentGameId) return;
+
+        if (!db) { // Offline mode
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                currentGameState.mapUrl = event.target.result;
+                canvasManager.render(currentGameState);
+            };
+            reader.readAsDataURL(file);
+            return;
+        }
+
+        try { // Online mode
+            const mapUrl = await firebase.uploadFile(file, userId);
+            await firebase.updateGame(db, currentGameId, { mapUrl });
+        } catch (error) {
+            console.error("Error uploading map:", error);
         }
     });
 
@@ -134,21 +150,33 @@ function attachEventListeners() {
     const tokenUpload = document.getElementById('token-upload');
     tokenUpload.addEventListener('change', async (e) => {
         const file = e.target.files[0];
-        if (file && currentGameId && currentGameState) {
-            try {
-                const tokenImgUrl = await firebase.uploadFile(file, userId);
-                const newToken = {
-                    id: crypto.randomUUID(),
-                    img: tokenImgUrl,
-                    x: 100,
-                    y: 100,
-                    size: 1
-                };
-                const updatedTokens = [...currentGameState.tokens, newToken];
-                await firebase.updateGame(db, currentGameId, { tokens: updatedTokens });
-            } catch (error) {
-                console.error("Error uploading token:", error);
+        if (!file || !currentGameId || !currentGameState) return;
+
+        const handleNewToken = (imageUrl) => {
+            const newToken = {
+                id: crypto.randomUUID(),
+                img: imageUrl,
+                x: 100, y: 100, size: 1
+            };
+            currentGameState.tokens.push(newToken);
+            canvasManager.render(currentGameState);
+            if (db) { // Only update Firebase if online
+                firebase.updateGame(db, currentGameId, { tokens: currentGameState.tokens });
             }
+        };
+
+        if (!db) { // Offline mode
+            const reader = new FileReader();
+            reader.onload = (event) => handleNewToken(event.target.result);
+            reader.readAsDataURL(file);
+            return;
+        }
+
+        try { // Online mode
+            const tokenImgUrl = await firebase.uploadFile(file, userId);
+            handleNewToken(tokenImgUrl);
+        } catch (error) {
+            console.error("Error uploading token:", error);
         }
     });
 }
