@@ -254,40 +254,42 @@ function drawGraphGrid(size) {
     ctx.stroke();
 }
 
-function generateHexGridDefinition(canvasWidth, canvasHeight, size) {
-    mapGrid = {};
-    if (size <= 0) return;
-
-    const hexWidth = Math.sqrt(3) * size;
-    const hexHeight = 2 * size;
-    const worldWidth = canvasWidth / view.zoom;
-    const worldHeight = canvasHeight / view.zoom;
-
-    const rows = Math.ceil(worldHeight / (hexHeight * 0.75)) + 2;
-    const cols = Math.ceil(worldWidth / hexWidth) + 2;
-
-    const startRow = -Math.floor(rows / 2);
-    const endRow = Math.ceil(rows / 2);
-    const startCol = -Math.floor(cols / 2);
-    const endCol = Math.ceil(cols / 2);
-
-    for (let r = startRow; r < endRow; r++) {
-        for (let q = startCol; q < endCol; q++) {
-            mapGrid[`${q},${r}`] = true;
-        }
-    }
+// Helper function to convert pixel coordinates to fractional axial hex coordinates
+function pixelToHex(x, y, size) {
+    const q = (Math.sqrt(3) / 3 * x - 1 / 3 * y) / size;
+    const r = (2 / 3 * y) / size;
+    return { q, r };
 }
+
+// Helper function to round fractional hex coordinates to the nearest integer hex coordinates
+function axialRound(frac) {
+    const q = frac.q;
+    const r = frac.r;
+    const s = -q - r;
+
+    let rq = Math.round(q);
+    let rr = Math.round(r);
+    let rs = Math.round(s);
+
+    const q_diff = Math.abs(rq - q);
+    const r_diff = Math.abs(rr - r);
+    const s_diff = Math.abs(rs - s);
+
+    if (q_diff > r_diff && q_diff > s_diff) {
+        rq = -rr - rs;
+    } else if (r_diff > s_diff) {
+        rr = -rq - rs;
+    }
+
+    return { q: rq, r: rr };
+}
+
 
 function drawGrid() {
     const gridType = gridTypeSelect.value;
     const gridSize = parseInt(gridSizeInput.value);
     if (gridType === 'none' || isNaN(gridSize) || gridSize <= 0) {
         return;
-    }
-
-    if (gridType === 'hex' && baseHexSize !== gridSize) {
-        baseHexSize = gridSize;
-        generateHexGridDefinition(canvas.width, canvas.height, baseHexSize);
     }
 
     ctx.strokeStyle = gridColorInput.value;
@@ -297,20 +299,29 @@ function drawGrid() {
     if (gridType === 'graph') {
         drawGraphGrid(gridSize);
     } else if (gridType === 'hex') {
+        baseHexSize = gridSize; // Keep hex size updated
+
         const xStart = -view.offsetX / view.zoom;
         const yStart = -view.offsetY / view.zoom;
         const xEnd = (canvas.width - view.offsetX) / view.zoom;
         const yEnd = (canvas.height - view.offsetY) / view.zoom;
-        const buffer = baseHexSize * 2;
+
+        const topLeft = axialRound(pixelToHex(xStart, yStart, baseHexSize));
+        const topRight = axialRound(pixelToHex(xEnd, yStart, baseHexSize));
+        const bottomLeft = axialRound(pixelToHex(xStart, yEnd, baseHexSize));
+        const bottomRight = axialRound(pixelToHex(xEnd, yEnd, baseHexSize));
+
+        const qMin = Math.min(topLeft.q, topRight.q, bottomLeft.q, bottomRight.q) - 1;
+        const qMax = Math.max(topLeft.q, topRight.q, bottomLeft.q, bottomRight.q) + 1;
+        const rMin = Math.min(topLeft.r, topRight.r, bottomLeft.r, bottomRight.r) - 1;
+        const rMax = Math.max(topLeft.r, topRight.r, bottomLeft.r, bottomRight.r) + 1;
 
         ctx.beginPath();
-        for (const key in mapGrid) {
-            const [q, r] = key.split(',').map(Number);
-            const { x, y } = hexToPixel(q, r, baseHexSize);
-
-            if (x >= xStart - buffer && x <= xEnd + buffer && y >= yStart - buffer && y <= yEnd + buffer) {
+        for (let r = rMin; r <= rMax; r++) {
+            for (let q = qMin; q <= qMax; q++) {
+                const { x, y } = hexToPixel(q, r, baseHexSize);
                 for (let i = 0; i < 6; i++) {
-                    const corner = getHexCorner({x, y}, baseHexSize, i);
+                    const corner = getHexCorner({ x, y }, baseHexSize, i);
                     if (i === 0) ctx.moveTo(corner.x, corner.y);
                     else ctx.lineTo(corner.x, corner.y);
                 }
@@ -445,6 +456,5 @@ function onWheel(e) {
 function resizeCanvas() {
     canvas.width = canvasContainer.clientWidth;
     canvas.height = canvasContainer.clientHeight;
-    generateHexGridDefinition(canvas.width, canvas.height, baseHexSize);
     draw();
 }
