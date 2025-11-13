@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VTT Prototype</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="ui-container">
+        <div class="controls">
+            <label for="map-upload">Map:</label>
+            <input type="file" id="map-upload" accept="image/*">
+            <label for="token-upload">Token:</label>
+            <input type="file" id="token-upload" accept="image/*">
+        </div>
+    </div>
+    <canvas id="vtt-canvas"></canvas>
+    <div id="module-container"></div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
