@@ -1,0 +1,3 @@
+# Firebase configuration file
+# This file contains sensitive API keys and should not be committed to version control.
+firebase.config.js
