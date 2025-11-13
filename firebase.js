@@ -4,13 +4,37 @@ import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.g
 import { getFirestore, doc, setDoc, onSnapshot, updateDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
-// These global variables are expected to be injected by the environment.
-// Fallbacks are provided for local development.
-const firebaseConfig = typeof __firebase_config !== 'undefined' ? __firebase_config : {};
+// --- Dynamic Configuration Loading ---
+
+// Global variables injected by the dev environment.
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'vtt-prototype';
 
 let app;
 let storage;
+let firebaseConfig;
+
+/**
+ * Asynchronously loads the Firebase configuration.
+ * It first checks for a global __firebase_config variable (injected by the dev environment).
+ * If not found, it attempts to load the configuration from a local firebase.config.js file.
+ * @returns {Promise<object|null>} The Firebase config object or null if not found.
+ */
+async function getFirebaseConfig() {
+    if (typeof __firebase_config !== 'undefined' && Object.keys(__firebase_config).length > 0) {
+        console.log("Using injected Firebase config.");
+        return __firebase_config;
+    } else {
+        try {
+            console.log("Attempting to load config from ./firebase.config.js...");
+            const configModule = await import('./firebase.config.js');
+            return configModule.firebaseConfig;
+        } catch (error) {
+            console.error("Failed to load local firebase.config.js:", error);
+            return null;
+        }
+    }
+}
+
 
 /**
  * Initializes the Firebase application, handles authentication, and returns Firestore and Auth instances.
@@ -19,9 +43,10 @@ let storage;
  * @returns {Promise<{auth: Auth, db: Firestore, userId: string}>}
  */
 export async function initFirebase() {
-    if (!Object.keys(firebaseConfig).length) {
-        console.error("Firebase config is missing. Cannot initialize Firebase.");
-        // Return dummy objects to prevent the app from crashing.
+    firebaseConfig = await getFirebaseConfig();
+
+    if (!firebaseConfig || !Object.keys(firebaseConfig).length) {
+        console.error("Firebase config is missing or invalid. Cannot initialize Firebase.");
         return { auth: null, db: null, userId: 'offline-user' };
     }
 
@@ -55,6 +80,10 @@ export async function initFirebase() {
  * @returns {Promise<string>} The ID of the newly created game.
  */
 export async function createGame(db, userId) {
+    if (!db) {
+        console.warn("Offline mode: Cannot create game in Firestore. Using local session.");
+        return `local_${crypto.randomUUID()}`;
+    }
     const defaultGameState = {
         mapUrl: null,
         tokens: [],
@@ -74,6 +103,10 @@ export async function createGame(db, userId) {
  * @returns {Function} The unsubscribe function from onSnapshot.
  */
 export function subscribeToGame(db, gameId, onStateChangeCallback) {
+    if (!db) {
+        // In offline mode, there's nothing to subscribe to. Return a dummy function.
+        return () => {};
+    }
     const gameDocRef = doc(db, `artifacts/${appId}/public/data/games/${gameId}`);
     const unsubscribe = onSnapshot(gameDocRef, (doc) => {
         if (doc.exists()) {
@@ -95,6 +128,10 @@ export function subscribeToGame(db, gameId, onStateChangeCallback) {
  * @returns {Promise<void>}
  */
 export async function updateGame(db, gameId, payload) {
+    if (!db) {
+        // In offline mode, updates are not persisted.
+        return;
+    }
     const gameDocRef = doc(db, `artifacts/${appId}/public/data/games/${gameId}`);
     await setDoc(gameDocRef, payload, { merge: true });
 }
@@ -106,6 +143,10 @@ export async function updateGame(db, gameId, payload) {
  * @returns {Promise<string>} The public download URL of the uploaded file.
  */
 export async function uploadFile(file, userId) {
+    if (!storage) {
+        console.warn("Offline mode: Cannot upload file.");
+        return null;
+    }
     if (!file || !userId) {
         throw new Error("File and userId must be provided for upload.");
     }
