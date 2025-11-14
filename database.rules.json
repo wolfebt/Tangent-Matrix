@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "campaigns": {
+      "$campaignId": {
+        ".read": "root.child('campaignMembers').child($campaignId).child(auth.uid).exists()",
+        ".write": "root.child('campaignMembers').child($campaignId).child(auth.uid).exists()"
+      }
+    },
+    "campaignMembers": {
+      ".read": "auth != null",
+      ".write": false
+    }
+  }
+}
