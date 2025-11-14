@@ -1,6 +1,6 @@
 // app.js - Main application controller
 
-import { init as initCanvas, draw as drawCanvas } from './canvas.js';
+import { init as initCanvas, draw as drawCanvas } from './tm-canvas.js';
 
 // --- STATE ---
 let selectedItem = null;
