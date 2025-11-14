@@ -12,6 +12,9 @@ const ui = {};
  * Caches all the DOM elements needed for the application.
  */
 function cacheDOMElements() {
+    // User Name
+    ui.userName = document.getElementById('user-name');
+
     // Canvas
     ui.canvasEl = document.getElementById('vtt-canvas');
     ui.canvasContainer = document.getElementById('canvas-container');
@@ -35,7 +38,6 @@ function cacheDOMElements() {
     // Dice Roller
     ui.diceInput = document.getElementById('dice-input');
     ui.rollDiceButton = document.getElementById('roll-dice');
-    ui.diceResult = document.getElementById('dice-result');
 
     // Editor Panel
     ui.editorPanel = document.getElementById('editor-panel');
@@ -53,6 +55,11 @@ function cacheDOMElements() {
 
     // Accordions
     ui.accordionHeaders = document.querySelectorAll('.collapsible-header');
+
+    // Message Log
+    ui.messageDisplay = document.getElementById('message-display');
+    ui.messageInput = document.getElementById('message-input');
+    ui.sendMessageButton = document.getElementById('send-message');
 }
 
 /**
@@ -60,16 +67,24 @@ function cacheDOMElements() {
  */
 function attachEventListeners() {
     // Accordions
-    ui.accordionHeaders.forEach(header => {
-        header.addEventListener('click', () => {
-            const content = header.nextElementSibling;
-            content.classList.toggle('hidden');
-            header.classList.toggle('collapsed');
+    ui.accordionHeaders.forEach(clickedHeader => {
+        clickedHeader.addEventListener('click', () => {
+            const contentToShow = clickedHeader.nextElementSibling;
+            const isAlreadyOpen = !contentToShow.classList.contains('hidden');
+
+            // First, close all accordions
+            ui.accordionHeaders.forEach(header => {
+                header.nextElementSibling.classList.add('hidden');
+                header.classList.add('collapsed');
+            });
+
+            // If the clicked one wasn't already open, open it.
+            if (!isAlreadyOpen) {
+                contentToShow.classList.remove('hidden');
+                clickedHeader.classList.remove('collapsed');
+            }
         });
     });
-     // Open the "Create" accordion by default
-    document.getElementById('create-header').classList.remove('collapsed');
-    document.getElementById('create-content').classList.remove('hidden');
 
 
     // Map Layer
@@ -125,7 +140,47 @@ function attachEventListeners() {
         selectedItem = deleteSelectedItem();
         updateEditorUI();
     });
+
+    // Message Log
+    ui.sendMessageButton.addEventListener('click', handleSendMessage);
+    ui.messageInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            handleSendMessage();
+        }
+    });
 }
+
+/**
+ * Adds a formatted message to the message log.
+ * @param {string} source - The source of the message (e.g., user name, "SYSTEM").
+ * @param {string} message - The message content.
+ */
+function addMessageToLog(source, message) {
+    const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const formattedMessage = `[${timestamp}] [${source}] ${message}`;
+
+    const messageEl = document.createElement('div');
+    messageEl.innerHTML = formattedMessage; // Use innerHTML to render the <s> tag from dice rolls
+    ui.messageDisplay.appendChild(messageEl);
+
+    // Scroll to the bottom
+    ui.messageDisplay.scrollTop = ui.messageDisplay.scrollHeight;
+}
+
+/**
+ * Handles sending a user message.
+ */
+function handleSendMessage() {
+    const message = ui.messageInput.value.trim();
+    if (message === '') return;
+
+    const userName = ui.userName.value || 'Anonymous';
+    addMessageToLog(userName, message);
+
+    ui.messageInput.value = '';
+    ui.messageInput.focus();
+}
+
 
 /**
  * Updates the editor panel based on the currently selected item.
@@ -160,11 +215,9 @@ function handleDiceRoll() {
     const result = parseDiceNotation(notation);
 
     if (result.error) {
-        ui.diceResult.textContent = result.error;
-        ui.diceResult.classList.add('text-red-400');
+        addMessageToLog('SYSTEM', `<span class="text-red-400">${result.error}</span>`);
     } else {
-        ui.diceResult.innerHTML = result.resultString;
-        ui.diceResult.classList.remove('text-red-400');
+        addMessageToLog('SYSTEM', result.resultString);
     }
 }
 
