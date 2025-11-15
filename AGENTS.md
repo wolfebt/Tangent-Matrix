@@ -17,26 +17,17 @@ Deploy: firebase deploy --only hosting,database
 3. Core Architecture & File Conventions
 
 Adhere strictly to this Separation of Concerns (SoC) model. This is non-negotiable and provides architectural context to guide file placement.
-index.html: The only HTML page.
-tm-style.css: All CSS styles.
-/src/firebase-config.js:
-Initializes and exports the single auth and db instances.
-/src/app.js:
-The main application orchestrator.
-Initializes the onAuthStateChanged listener , which is the primary driver of application state.
-Orchestrates calls between auth, db, and ui modules.
-/src/auth.js:
-Manages all Firebase Authentication logic.
-Exports functions like handleGoogleSignIn, handleEmailSignUp, handleSignOut.
-Does NOT contain any DOM manipulation code.
-/src/db.js:
-Manages all Firebase Realtime Database (RTDB) interactions.
-Exports functions like updateTokenPosition, pushChatMessage, streamChatMessages.
-Does NOT contain any DOM manipulation code.
-/srcs/ui.js:
-Manages all DOM interactions (document.getElementById, addEventListener, etc.).
-Contains functions like showLoginScreen, showVTT, renderToken, renderMessage.
-Imports functions from auth.js and db.js to wire up event listeners.
+
+- **`index.html`**: The landing page, which immediately redirects to the main VTT application.
+- **`/pages/Tangent-Matrix.html`**: The main HTML file for the VTT application.
+- **`/css/tm-style.css`**: All CSS styles for the application.
+- **`/js/`**: This directory contains all the JavaScript modules.
+  - **`tm-firebase-config.js`**: Initializes and exports the single `auth` and `db` instances.
+  - **`tm-app.js`**: The main application orchestrator. Initializes the `onAuthStateChanged` listener, which is the primary driver of application state. Orchestrates calls between the auth, db, and ui modules.
+  - **`tm-auth.js`**: Manages all Firebase Authentication logic. Exports functions like `handleGoogleSignIn`, `handleEmailSignUp`, and `handleSignOut`. Does NOT contain any DOM manipulation code.
+  - **`tm-db.js`**: Manages all Firebase Realtime Database (RTDB) interactions. Exports functions like `updateTokenPosition`, `pushChatMessage`, and `streamChatMessages`. Does NOT contain any DOM manipulation code.
+  - **`tm-ui.js`**: Manages all DOM interactions (`document.getElementById`, `addEventListener`, etc.). Contains functions like `showLoginScreen`, `showVTT`, `renderToken`, and `renderMessage`. Imports functions from `auth.js` and `db.js` to wire up event listeners.
+  - **`/utils/tm-dice.js`**: Utility functions, such as dice rolling logic.
 
 4. Coding Standards
 
