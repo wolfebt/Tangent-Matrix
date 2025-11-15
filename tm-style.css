@@ -1,0 +1,829 @@
+/* --- Sci-Fi Theme --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* :root variables define the color palette and reusable values */
+:root {
+--dark-bg: #0d1117;
+--glass-bg: rgba(22, 27, 34, 0.6);
+--panel-border: rgba(13, 92, 99, 0.3); /* Adjusted for new theme */
+--light-text: #e6edf3;
+--medium-text: #8b949e;
+--accent-blue: #0A2463; /* New Dark Blue */
+--accent-green: #0D5C63; /* New Dark Green */
+--accent-red: #F87171; /* Red for missing key */
+--font-main: 'Inter', sans-serif;
+--border-blue: #63b3ed; /* Thin blue line for frames */
+}
+
+/* Utility Classes */
+.hidden {
+display: none !important;
+}
+
+/* General Body Styles */
+body {
+background-color: var(--dark-bg);
+color: var(--light-text);
+font-family: var(--font-main);
+margin: 0;
+line-height: 1.6;
+/* Creates the sci-fi dot grid background */
+background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+background-size: 25px 25px;
+min-height: 100vh;
+}
+
+/* Custom Scrollbar for dark theme */
+::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar-track { background: #1c2128; }
+::-webkit-scrollbar-thumb {
+background-color: #30363d;
+border-radius: 20px;
+border: 3px solid #1c2128;
+}
+::-webkit-scrollbar-thumb:hover { background-color: #484f58; }
+
+.container {
+max-width: 1800px;
+margin: 0 auto;
+padding: 2rem 4rem;
+}
+
+@media (max-width: 768px) {
+.container { padding: 1.5rem; }
+}
+
+/* Header & Navigation */
+.main-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 1rem 1.5rem;
+border-bottom: 1px solid var(--panel-border);
+position: sticky;
+top: 0;
+background-color: var(--dark-bg);
+z-index: 900;
+}
+
+.logo-title {
+font-size: 2rem;
+font-weight: 700;
+text-decoration: none;
+}
+
+.animated-gradient {
+background: linear-gradient(90deg, #34EBF7, #0A2463, #0D5C63); /* Updated Gradient */
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+animation: gradient-animation 5s ease infinite;
+background-size: 200% 200%;
+}
+
+/* New style for the section header text */
+.sci-fi-title-text {
+color: #63b3ed; /* Bright blue color */
+text-shadow: 0 0 8px rgba(13, 214, 125, 0.6); /* Fine green glow */
+}
+
+@keyframes gradient-animation {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+
+/* Animation for main content panels */
+@keyframes slideInFromRight {
+from {
+opacity: 0;
+transform: translateX(30px);
+}
+to {
+opacity: 1;
+transform: translateX(0);
+}
+}
+
+.content-view {
+animation: slideInFromRight 0.5s ease-out forwards;
+}
+
+/* Animation for section headers */
+@keyframes fadeIn {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+
+.fade-in-header {
+/* Set initial state for animation */
+opacity: 0;
+/* Animation properties with a slight delay */
+animation: fadeIn 0.8s 0.2s ease-out forwards;
+}
+
+
+/* Main app layout using flexbox */
+.app-container {
+display: flex;
+gap: 1.5rem;
+padding: 0 1.5rem 1.5rem 0;
+}
+
+#app-sidebar {
+width: 280px;
+flex-shrink: 0;
+padding: 1.5rem;
+}
+
+#main-content {
+flex-grow: 1;
+/* Added for smooth transition effect */
+overflow: hidden;
+}
+
+/* Glass Panel Style - a key part of the sci-fi aesthetic */
+.glass-panel {
+background-color: var(--glass-bg);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border-radius: 0.75rem;
+/* New gradient border effect */
+border-width: 1px;
+border-style: solid;
+border-image-slice: 1;
+border-image-source: linear-gradient(to bottom right, var(--accent-green), var(--accent-blue));
+/* Add an inner glow for depth */
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), inset 0 0 15px rgba(13, 92, 99, 0.2);
+}
+
+/* Sidebar button styling */
+.sidebar-tab {
+display: block;
+width: 100%;
+padding: 0.75rem 1rem;
+margin-bottom: 0.5rem;
+border-radius: 0.375rem;
+text-align: left;
+font-weight: 600;
+text-transform: uppercase;
+transition: all 0.2s;
+border: 2px solid transparent;
+background-color: var(--dark-bg);
+color: var(--medium-text);
+cursor: pointer;
+}
+.sidebar-tab:hover {
+background-color: rgba(139, 148, 158, 0.2);
+border-color: var(--panel-border);
+color: var(--light-text);
+}
+.sidebar-tab.active {
+background-color: #63b3ed; /* New bright blue background */
+color: var(--dark-bg); /* Changed for better contrast */
+border-color: #63b3ed; /* Match background color */
+/* New back glow effect */
+box-shadow: 0 0 20px var(--accent-green);
+font-size: 1.2em; /* 20% increase in text size */
+position: relative;
+}
+
+.sidebar-tab.active::after {
+content: '';
+position: absolute;
+right: -25px;
+top: 50%;
+transform: translateY(-50%);
+width: 24px;
+height: 2px;
+background-color: var(--border-blue);
+}
+
+/* Main content card styling */
+.hub-card {
+padding: 1.5rem;
+}
+
+.hub-card:hover {
+transform: translateY(-5px);
+}
+
+.card-title {
+font-size: 1.5rem;
+font-weight: 600;
+margin-bottom: 0.75rem;
+}
+
+.card-description {
+font-size: 1rem;
+color: var(--medium-text);
+}
+
+/* Modal Styles */
+.modal-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(13, 17, 23, 0.7);
+backdrop-filter: blur(8px);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+transition: opacity 0.3s ease;
+}
+
+.modal-content {
+width: 100%;
+max-width: 500px;
+padding: 1.5rem 2rem;
+animation: modal-fade-in 0.3s ease-out;
+}
+
+@keyframes modal-fade-in {
+from { opacity: 0; transform: translateY(-20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 1px solid var(--panel-border);
+padding-bottom: 1rem;
+margin-bottom: 1.5rem;
+}
+
+.modal-header h3 { margin: 0; font-size: 1.5rem; }
+
+.modal-close-btn {
+background: none;
+border: none;
+color: var(--medium-text);
+font-size: 2rem;
+cursor: pointer;
+line-height: 1;
+padding: 0;
+}
+.modal-close-btn:hover { color: var(--light-text); }
+
+/* Form & Button Styles */
+.form-group {
+margin-bottom: 1rem;
+}
+
+label {
+color: var(--light-text);
+text-transform: uppercase;
+font-size: 0.8rem;
+margin-bottom: 0.25rem;
+display: block;
+}
+
+.input-field {
+width: 100%;
+background-color: var(--dark-bg);
+border: 1px solid #30363d;
+border-radius: 8px;
+padding: 0.75rem;
+color: var(--light-text);
+font-family: var(--font-main);
+font-size: 1rem;
+box-sizing: border-box;
+transition: all 0.2s;
+}
+.input-field:focus {
+outline: none;
+border-color: var(--accent-blue);
+box-shadow: 0 0 10px rgba(10, 36, 99, 0.3);
+}
+
+.action-btn {
+color: var(--light-text); /* Light text */
+font-weight: bold;
+padding: 8px 16px; /* Smaller padding */
+border-radius: 8px;
+border: 1px solid var(--border-blue); /* Blue line border */
+cursor: pointer;
+transition: all 0.3s;
+width: 100%;
+font-size: 0.9rem; /* Smaller font size */
+text-align: center;
+background-color: var(--dark-bg); /* Dark background */
+box-shadow: none; /* Remove glow */
+}
+
+.action-btn:hover:not(:disabled) {
+background-color: rgba(99, 179, 237, 0.2); /* Blue tint on hover */
+box-shadow: 0 0 10px rgba(99, 179, 237, 0.4);
+}
+
+/* New Table Styles for mock content */
+.data-table {
+width: 100%;
+border-collapse: collapse;
+}
+.data-table thead {
+background-color: rgba(139, 148, 158, 0.1);
+}
+.data-table th, .data-table td {
+padding: 1rem 1.5rem;
+text-align: left;
+border-bottom: 1px solid var(--panel-border);
+}
+.data-table th {
+text-transform: uppercase;
+font-weight: 600;
+color: var(--medium-text);
+}
+.data-table tbody tr:hover {
+background-color: rgba(139, 148, 158, 0.1);
+}
+
+/* --- Jules' Fixes --- */
+
+/* Apply Glass Panel to all modals for consistency */
+.modal-backdrop > .modal-content {
+background-color: var(--glass-bg);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border-radius: 0.75rem;
+border: 1px solid var(--border-blue); /* Thin blue border */
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), inset 0 0 15px rgba(13, 92, 99, 0.2);
+}
+
+/* General button border consistency */
+.btn, .sidebar-tab, .file-menu-button {
+border: 1px solid var(--border-blue);
+}
+
+/* File Menu & Dropdown */
+.file-menu {
+position: relative;
+display: inline-block;
+}
+
+.file-menu-button {
+color: var(--light-text);
+font-weight: bold;
+padding: 8px 16px;
+border-radius: 8px;
+border: 1px solid var(--border-blue);
+background-color: var(--dark-bg);
+cursor: pointer;
+transition: all 0.3s;
+}
+
+.file-menu-button:hover {
+background-color: rgba(99, 179, 237, 0.2);
+box-shadow: 0 0 10px rgba(99, 179, 237, 0.4);
+}
+
+.file-menu-dropdown {
+display: none; /* Hidden by default */
+position: absolute;
+right: 0;
+min-width: 200px;
+z-index: 1010; /* High z-index to appear above modals */
+margin-top: 0.5rem;
+padding: 0.5rem;
+}
+
+/* Apply glass-panel to dropdown */
+.file-menu > .file-menu-dropdown {
+background-color: var(--glass-bg);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border-radius: 0.75rem;
+border: 1px solid var(--border-blue); /* Thin blue border */
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), inset 0 0 15px rgba(13, 92, 99, 0.2);
+}
+
+.file-menu-dropdown.show {
+display: block; /* Show when active */
+}
+
+.file-menu-dropdown button {
+display: block;
+width: 100%;
+padding: 0.75rem 1rem;
+text-align: left;
+color: var(--light-text);
+background-color: transparent;
+border: none;
+border-radius: 0.375rem;
+cursor: pointer;
+transition: background-color 0.2s;
+}
+
+.file-menu-dropdown button:hover {
+background-color: rgba(139, 148, 158, 0.2);
+}
+
+/* Global Form Styles */
+.global-form-label {
+color: var(--medium-text);
+text-transform: uppercase;
+font-size: 0.8rem;
+margin-bottom: 0.25rem;
+display: block;
+}
+
+.global-form-input, .global-form-select, .global-form-textarea {
+width: 100%;
+background-color: rgba(13, 17, 23, 0.9); /* 90% opaque dark background */
+border: 1px solid var(--border-blue); /* Use standard blue for border */
+border-radius: 8px;
+padding: 0.75rem;
+color: var(--light-text);
+font-family: var(--font-main);
+font-size: 1rem;
+box-sizing: border-box;
+transition: all 0.2s;
+}
+
+.global-form-input:focus, .global-form-select:focus, .global-form-textarea:focus {
+outline: none;
+border-color: var(--border-blue);
+box-shadow: 0 0 15px rgba(99, 179, 237, 0.6); /* Enhanced blue glow */
+}
+
+.data-table {
+border: 1px solid var(--border-blue);
+border-radius: 0.75rem;
+overflow: hidden;
+}
+
+/* Custom arrow for select elements */
+.form-select-arrow {
+background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+background-position: right 0.5rem center;
+background-repeat: no-repeat;
+background-size: 1.5em 1.5em;
+padding-right: 2.5rem;
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+}
+
+#wiki-directory-list a {
+display: block;
+padding: 0.5rem 1rem;
+border-radius: 0.5rem;
+background-color: var(--dark-bg);
+border: 1px solid var(--border-blue);
+margin-bottom: 0.25rem;
+transition: background-color 0.2s;
+}
+
+#wiki-directory-list a:hover {
+background-color: rgba(99, 179, 237, 0.2);
+}
+
+#wiki-content-main {
+padding: 1.5rem;
+}
+
+/* Add a border around the entire wiki container */
+#main-content > .flex {
+border: 1px solid var(--border-blue);
+border-radius: 0.75rem;
+overflow: hidden;
+}
+
+#wiki-directory-main {
+border-right: 1px solid var(--border-blue) !important;
+}
+
+.table-view-container {
+border: 1px solid var(--border-blue);
+border-radius: 0.75rem;
+overflow: hidden;
+padding: 1rem;
+}
+
+#wiki-directory-list a.active {
+background-color: #63b3ed; /* New bright blue background */
+color: var(--dark-bg); /* Changed for better contrast */
+border-color: #63b3ed; /* Match background color */
+font-size: 1.2em; /* 20% increase in text size */
+}
+
+.header-title-container {
+color: var(--light-text);
+text-shadow: 0 0 10px var(--border-blue);
+animation: pulse 4s infinite;
+padding: 1rem;
+}
+
+.tangent-title {
+font-size: 3rem;
+font-weight: bold;
+line-height: 1;
+}
+
+.header-title-container p {
+margin: 0;
+font-size: 0.8rem;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+}
+
+@keyframes pulse {
+0% {
+text-shadow: 0 0 5px rgba(99, 179, 237, 0.7), 0 0 10px rgba(99, 179, 237, 0.7);
+}
+50% {
+text-shadow: 0 0 15px rgba(99, 179, 237, 1), 0 0 25px rgba(99, 179, 237, 1);
+}
+100% {
+text-shadow: 0 0 5px rgba(99, 179, 237, 0.7), 0 0 10px rgba(99, 179, 237, 0.7);
+}
+}
+
+.guide-content {
+border: 1px solid var(--border-blue);
+border-radius: 0.75rem;
+padding: 1rem;
+}
+
+/* --- Quill Editor Styles --- */
+.quill-editor-frame {
+background-color: rgba(13, 17, 23, 0.9);
+border: 1px solid var(--border-blue);
+border-radius: 8px;
+padding: 0; /* The editor's own padding will be used */
+transition: all 0.2s;
+}
+
+.quill-editor-frame .ql-toolbar {
+border-top-left-radius: 8px;
+border-top-right-radius: 8px;
+}
+
+.quill-editor-frame .ql-container {
+border-bottom-left-radius: 8px;
+border-bottom-right-radius: 8px;
+}
+
+/* Apply focus glow to the frame when the editor inside is focused */
+.quill-editor-frame.frame-focused {
+outline: none;
+border-color: var(--border-blue);
+box-shadow: 0 0 15px rgba(99, 179, 237, 0.6);
+}
+
+/* --- Persona Folio Specific Refactoring --- */
+
+/* Layout & Containers */
+.folio-container {
+max-width: 1600px;
+margin: auto;
+padding: 2rem;
+}
+.folio-form {
+padding: 2rem;
+}
+.folio-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 1rem;
+}
+.folio-header-left { flex: 1; }
+.folio-header-center { flex-grow: 1; text-align: center; }
+.folio-header-right {
+flex: 1;
+display: flex;
+justify-content: flex-end;
+align-items: center;
+gap: 1rem;
+}
+
+/* Typography */
+.folio-title { font-size: 1.5rem; }
+.folio-subtitle { font-size: 1.2rem; color: var(--border-blue); }
+
+/* Buttons */
+.economy-btn {
+color: var(--border-blue);
+background: none;
+border: none;
+cursor: pointer;
+}
+.action-btn-small {
+padding: 0.25rem 0.75rem;
+font-size: 0.875rem;
+}
+.remove-btn-icon {
+padding: 0.5rem;
+}
+.remove-btn-compact {
+padding: 0.25rem 0.5rem;
+}
+.add-button {
+width: 100%;
+margin-top: 1rem;
+}
+
+/* Dividers */
+.menu-divider {
+border-color: var(--panel-border);
+margin: 0.25rem 0;
+}
+.section-divider {
+border-color: var(--panel-border);
+margin: 1rem 0;
+}
+
+/* Forms & Grids */
+.browse-input { cursor: pointer; }
+.attribute-grid-header {
+display: grid;
+grid-template-columns: 2fr 1fr 1fr 1fr;
+gap: 0.5rem;
+text-align: center;
+}
+.attribute-grid-header span:first-child { text-align: left; }
+.attribute-row {
+display: grid;
+grid-template-columns: 2fr 1fr 1fr 1fr;
+gap: 0.5rem;
+align-items: center;
+}
+.attribute-row.primary {
+background: rgba(0,0,0,0.2);
+padding: 0.25rem;
+border-radius: 4px;
+}
+.attribute-label.sub-attribute {
+font-style: italic;
+padding-left: 1rem;
+}
+.attribute-label.primary-attribute { font-weight: bold; }
+.attribute-input { text-align: center; }
+.attribute-total {
+text-align: center;
+font-weight: bold;
+}
+
+/* Dynamic Item Lists */
+.item-list-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 0.5rem;
+background: var(--dark-bg);
+border-radius: 4px;
+}
+.note-row {
+display: flex;
+gap: 0.5rem;
+}
+.note-input { flex-grow: 1; }
+
+/* Modal Specific */
+.modal-controls {
+display: flex;
+justify-content: center;
+gap: 1rem;
+margin-top: 1rem;
+}
+.economy-details-panel {
+max-height: 300px;
+overflow-y: auto;
+background: var(--dark-bg);
+padding: 1rem;
+border-radius: 8px;
+}
+.add-skill-modal-row {
+display: grid;
+grid-template-columns: 2fr 1fr 1fr;
+gap: 0.5rem;
+align-items: center;
+}
+.text-disabled { color: var(--medium-text); }
+
+.character-name-header {
+font-size: 2rem;
+color: var(--border-blue);
+text-shadow: none;
+animation: none;
+}
+.bordered-header {
+border: 1px solid var(--border-blue);
+border-radius: 0.75rem;
+padding: 1rem;
+margin-bottom: 1rem;
+}
+.folio-header-center {
+text-align: center;
+}
+#header-cp-tracker {
+display: inline-block;
+}
+#economy-btn {
+width: auto;
+padding: 8px 16px;
+}
+
+.creator-credit {
+color: var(--medium-text);
+font-weight: 200;
+}
+/* --- Gem-Style Button for Modals --- */
+.gem-style-button {
+background: rgba(10, 36, 99, 0.4); /* Dark blue, semi-transparent */
+border: 1px solid var(--border-blue);
+border-radius: 8px;
+padding: 1rem;
+color: var(--light-text);
+text-align: center;
+text-transform: uppercase;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s ease-in-out;
+box-shadow: inset 0 0 10px rgba(99, 179, 237, 0.2); /* Inner glow */
+}
+
+.gem-style-button:hover {
+background: rgba(99, 179, 237, 0.3); /* Lighter blue on hover */
+box-shadow: 0 0 15px rgba(99, 179, 237, 0.6); /* Outer glow on hover */
+transform: translateY(-2px);
+}
+
+#modal-choices {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+gap: 1rem;
+}
+
+/* --- Landing Page View --- */
+.landing-page-container {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+gap: 1.5rem;
+padding: 1.5rem;
+}
+
+.landing-page-button {
+background: rgba(10, 36, 99, 0.4); /* Dark blue, semi-transparent */
+border: 1px solid var(--border-blue);
+border-radius: 8px;
+padding: 2rem;
+color: var(--light-text);
+text-align: center;
+text-transform: uppercase;
+font-weight: 600;
+font-size: 1.2rem;
+cursor: pointer;
+transition: all 0.2s ease-in-out;
+box-shadow: inset 0 0 10px rgba(99, 179, 237, 0.2); /* Inner glow */
+}
+
+.landing-page-button:hover {
+background: rgba(99, 179, 237, 0.3); /* Lighter blue on hover */
+box-shadow: 0 0 20px rgba(99, 179, 237, 0.7); /* Outer glow on hover */
+transform: translateY(-5px);
+}
+
+.primary-attribute label,
+.primary-attribute input {
+font-size: 1.5rem;
+}
+
+.stat-block {
+border: 1px solid var(--border-blue);
+padding: 1rem;
+border-radius: 8px;
+margin-bottom: 1rem;
+}
+
+#core-stats-tab .global-form-input {
+text-align: center;
+}
+
+/* --- Economy Modal Adjustments --- */
+.economy-btn-flagged {
+background-color: #f6e05e; /* Yellow */
+color: var(--dark-bg);
+box-shadow: 0 0 15px rgba(246, 224, 94, 0.8);
+}
+
+.pulsing-yellow-border {
+animation: pulse-yellow 1s 4;
+}
+
+@keyframes pulse-yellow {
+0% {
+box-shadow: 0 0 0 0 rgba(246, 224, 94, 0.7);
+}
+70% {
+box-shadow: 0 0 10px 15px rgba(246, 224, 94, 0);
+}
+100% {
+box-shadow: 0 0 0 0 rgba(246, 224, 94, 0);
+}
+}
