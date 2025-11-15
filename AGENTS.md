@@ -17,8 +17,8 @@ Deploy: firebase deploy --only hosting,database
 3. Core Architecture & File Conventions
 
 Adhere strictly to this Separation of Concerns (SoC) model. This is non-negotiable and provides architectural context to guide file placement.
-/public/index.html: The only HTML page.
-/public/style.css: All CSS styles.
+index.html: The only HTML page.
+tm-style.css: All CSS styles.
 /src/firebase-config.js:
 Initializes and exports the single auth and db instances.
 /src/app.js:
