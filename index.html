@@ -3,12 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tangent Matrix VTT</title>
+  <title>Tangent Matrix VTT - Login</title>
   <link rel="stylesheet" href="css/tm-style.css">
-  <script>
-    window.location.href = 'pages/Tangent-Matrix.html';
-  </script>
 </head>
 <body>
+  <div id="login-container">
+    <h1>Welcome to Tangent Matrix VTT</h1>
+    <div id="login-options">
+      <button id="google-signin-option">Sign in with Google</button>
+      <button id="anonymous-signin-option">Sign in Anonymously</button>
+      <button id="phone-signin-option">Sign in with Phone</button>
+      <button id="email-signin-option">Sign in with Email</button>
+    </div>
+    <div id="phone-auth-container" class="hidden">
+      <input type="tel" id="phone-number" placeholder="Phone number">
+      <button id="send-verification-code">Send Verification Code</button>
+      <div id="recaptcha-container"></div>
+      <input type="text" id="verification-code" placeholder="Verification code">
+      <button id="verify-code">Verify Code</button>
+    </div>
+    <div id="email-password-container" class="hidden">
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Password">
+      <button id="email-signin">Sign in</button>
+      <button id="email-signup">Sign up</button>
+    </div>
+  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, RecaptchaVerifier, signInWithPhoneNumber, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { firebaseConfig } from "./js/firebase-config.js";
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    // Your auth logic here, using the imported functions.
+  </script>
+  <script type="module" src="js/tm-auth.js"></script>
 </body>
 </html>

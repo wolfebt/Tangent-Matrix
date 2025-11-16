@@ -1,14 +1,14 @@
 {
   "rules": {
-    "campaigns": {
-      "$campaignId": {
-        ".read": "root.child('campaignMembers').child($campaignId).child(auth.uid).exists()",
-        ".write": "root.child('campaignMembers').child($campaignId).child(auth.uid).exists()"
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
       }
     },
-    "campaignMembers": {
-      ".read": "auth != null",
-      ".write": false
-    }
+    // You can add other rules here for different parts of your database.
+    // For now, we'll keep it simple.
+    ".read": "auth != null",
+    ".write": "auth != null"
   }
 }
