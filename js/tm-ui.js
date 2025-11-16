@@ -1,12 +1,12 @@
-import {
-  handleGoogleSignIn,
+import { 
+  handleGoogleSignIn, 
   handleAnonymousSignIn,
-  handleEmailSignUp,
+  handleEmailSignUp, 
   handleEmailSignIn,
   initializeRecaptcha,
   handlePhoneSignIn,
   verifyPhoneCode,
-  handleSignOut
+  handleSignOut 
 } from './tm-auth.js';
 import { updateTokenPosition, pushChatMessage } from './tm-db.js';
 import { rollD20 } from './utils/tm-dice.js';
