@@ -1,4 +1,13 @@
-import { handleGoogleSignIn, handleEmailSignUp, handleSignOut } from './tm-auth.js';
+import {
+  handleGoogleSignIn,
+  handleAnonymousSignIn,
+  handleEmailSignUp,
+  handleEmailSignIn,
+  initializeRecaptcha,
+  handlePhoneSignIn,
+  verifyPhoneCode,
+  handleSignOut
+} from './tm-auth.js';
 import { updateTokenPosition, pushChatMessage } from './tm-db.js';
 import { rollD20 } from './utils/tm-dice.js';
 import { getMode, setMode, getLocalUserId, setLocalUserId, saveProject, loadProject, getSavedProjects, clearProjects } from './tm-local-storage.js';
@@ -11,28 +20,58 @@ export const showLoginScreen = () => {
     <div class="login-container">
       <h1>Tangent Matrix VTT</h1>
       <button id="google-login">Sign In with Google</button>
-      <hr>
-      <h3>Or Sign Up with Email</h3>
-      <form id="email-signup-form">
-        <input id="signup-email" type="email" placeholder="Email" required />
-        <input id="signup-password" type="password" placeholder="Password" required />
-        <button id="email-signup" type="submit">Sign Up</button>
-      </form>
+      <div class="other-options" style="margin-top: 1rem; text-align: center;">
+        <a href="#" id="email-login-link" style="display: block; margin-bottom: 0.5rem;">Sign in with Email</a>
+        <a href="#" id="phone-login-link" style="display: block; margin-bottom: 0.5rem;">Sign in with Phone</a>
+        <a href="#" id="anonymous-login-link" style="display: block;">Continue as Guest</a>
+      </div>
     </div>
   `;
 
   vttContainer.classList.add('hidden');
   loginContainer.classList.remove('hidden');
 
+  // --- Wire up event listeners ---
   document.getElementById('google-login').addEventListener('click', handleGoogleSignIn);
+  document.getElementById('anonymous-login-link').addEventListener('click', handleAnonymousSignIn);
 
-  document.getElementById('email-signup-form').addEventListener('submit', (e) => {
+  // --- Email Modal ---
+  const emailModal = document.getElementById('email-modal');
+  document.getElementById('email-login-link').addEventListener('click', (e) => {
     e.preventDefault();
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
-    if (email && password) {
-      handleEmailSignUp(email, password);
-    }
+    emailModal.classList.remove('hidden');
+  });
+  document.getElementById('close-email-modal').addEventListener('click', () => {
+    emailModal.classList.add('hidden');
+  });
+  document.getElementById('email-signin-button').addEventListener('click', () => {
+    const email = document.getElementById('email-input').value;
+    const password = document.getElementById('password-input').value;
+    handleEmailSignIn(email, password);
+  });
+  document.getElementById('email-signup-button').addEventListener('click', () => {
+    const email = document.getElementById('email-input').value;
+    const password = document.getElementById('password-input').value;
+    handleEmailSignUp(email, password);
+  });
+
+  // --- Phone Modal ---
+  const phoneModal = document.getElementById('phone-modal');
+  document.getElementById('phone-login-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    phoneModal.classList.remove('hidden');
+    initializeRecaptcha(); // Initialize reCAPTCHA when the modal is opened
+  });
+  document.getElementById('close-phone-modal').addEventListener('click', () => {
+    phoneModal.classList.add('hidden');
+  });
+  document.getElementById('send-code-button').addEventListener('click', () => {
+    const phoneNumber = document.getElementById('phone-number-input').value;
+    handlePhoneSignIn(phoneNumber);
+  });
+  document.getElementById('verify-code-button').addEventListener('click', () => {
+    const code = document.getElementById('verification-code-input').value;
+    verifyPhoneCode(code);
   });
 };
 
