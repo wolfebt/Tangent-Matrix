@@ -37,12 +37,35 @@
 </head>
 <body class="h-full font-sans text-zinc-200 overflow-hidden">
 
-    <!-- Main Application Layout -->
-    <div class="flex h-screen">
+    <!-- Login Screen Container (hidden by default) -->
+    <div id="login-container-wrapper" class="hidden">
+        <!-- The login screen will be rendered here by tm-ui.js -->
+    </div>
 
-        <!-- Sidebar / "Console" -->
-        <aside class="w-72 bg-zinc-800 shadow-xl p-4 overflow-y-auto space-y-6">
-            <h1 class="text-2xl font-bold text-white">VTT Console</h1>
+    <!-- Main Application Container (visible by default) -->
+    <div id="vtt-app-wrapper">
+        <!-- Main Application Layout -->
+        <div class="flex h-screen">
+
+            <!-- Sidebar / "Console" -->
+            <aside class="w-72 bg-zinc-800 shadow-xl p-4 overflow-y-auto space-y-6">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-white">VTT Console</h1>
+                <div class="flex space-x-2">
+                    <!-- File Menu Dropdown -->
+                    <div class="relative" id="file-menu">
+                        <button id="file-menu-button" class="text-zinc-400 hover:text-white">File</button>
+                        <div id="file-menu-dropdown" class="absolute right-0 mt-2 w-48 bg-zinc-700 rounded-md shadow-lg z-10 hidden">
+                            <a href="#" id="save-button" class="block px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-600">Save</a>
+                            <a href="#" id="load-button" class="block px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-600">Load</a>
+                        </div>
+                    </div>
+                    <!-- Settings Button -->
+                    <button id="settings-button" class="text-zinc-400 hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </button>
+                </div>
+            </div>
 
             <!-- Section: Map Layer -->
             <div class="space-y-2">
@@ -170,5 +193,28 @@
     </div>
 
     <script type="module" src="../js/tm-app.js"></script>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-20">
+        <div class="bg-zinc-800 rounded-lg shadow-xl p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-white">Settings</h2>
+                <button id="close-settings-button" class="text-zinc-400 hover:text-white">&times;</button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="mode-toggle" class="block text-sm font-medium text-zinc-300">Application Mode</label>
+                    <select id="mode-toggle" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm">
+                        <option value="cloud">Cloud</option>
+                        <option value="local">Local</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="local-user-id" class="block text-sm font-medium text-zinc-300">Local User ID</label>
+                    <input type="text" id="local-user-id" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm">
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
