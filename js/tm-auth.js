@@ -1,5 +1,7 @@
+import { 
+  auth 
+} from './tm-firebase-config.js';
 import {
-  getAuth,
   GoogleAuthProvider,
   signInWithPopup,
   signInAnonymously,
@@ -9,8 +11,6 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-
-const auth = getAuth();
 
 // --- Google Sign-In ---
 export const handleGoogleSignIn = () => {
@@ -93,3 +93,11 @@ export const handleSignOut = () => {
     alert(`Sign Out Failed: ${error.message}`);
   });
 };
+
+// --- Auth State Observer ---
+onAuthStateChanged(auth, user => {
+  if (user) {
+    // User is signed in, redirect to the main application.
+    window.location.href = 'pages/Tangent-Matrix.html';
+  }
+});
