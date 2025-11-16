@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VTT Canvas Groundwork</title>
+    <title>Tangent Matrix VTT - Login</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -33,13 +33,20 @@
             },
         }
     </script>
-    <link rel="stylesheet" href="../css/tm-style.css">
+    <link rel="stylesheet" href="css/tm-style.css">
 </head>
-<body class="h-full font-sans text-zinc-200 overflow-hidden">
+<body class="h-full font-sans text-zinc-200 flex items-center justify-center">
 
-    <!-- Login Screen Container (hidden by default) -->
-    <div id="login-container-wrapper" class="hidden">
-        <!-- The login screen will be rendered here by tm-ui.js -->
+    <div id="login-container-wrapper">
+        <div class="login-container">
+            <h1>Tangent Matrix VTT</h1>
+            <button id="google-login">Sign In with Google</button>
+            <div class="other-options" style="margin-top: 1rem; text-align: center;">
+                <a href="#" id="email-login-link" style="display: block; margin-bottom: 0.5rem;">Sign in with Email</a>
+                <a href="#" id="phone-login-link" style="display: block; margin-bottom: 0.5rem;">Sign in with Phone</a>
+                <a href="#" id="anonymous-login-link" style="display: block;">Continue as Guest</a>
+            </div>
+        </div>
     </div>
 
     <!-- Email Modal -->
@@ -88,208 +95,9 @@
             </div>
         </div>
     </div>
+    
+    <script type="module" src="js/tm-app.js"></script>
+    <script type="module" src="js/tm-auth.js"></script>
 
-    <!-- Main Application Container (visible by default) -->
-    <div id="vtt-app-wrapper">
-        <!-- Main Application Layout -->
-        <div class="flex h-screen">
-
-            <!-- Sidebar / "Console" -->
-            <aside class="w-72 bg-zinc-800 shadow-xl p-4 overflow-y-auto space-y-6">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-white">VTT Console</h1>
-                <div class="flex space-x-2">
-                    <!-- File Menu Dropdown -->
-                    <div class="relative" id="file-menu">
-                        <button id="file-menu-button" class="text-zinc-400 hover:text-white">File</button>
-                        <div id="file-menu-dropdown" class="absolute right-0 mt-2 w-48 bg-zinc-700 rounded-md shadow-lg z-10 hidden">
-                            <a href="#" id="save-button" class="block px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-600">Save</a>
-                            <a href="#" id="load-button" class="block px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-600">Load</a>
-                        </div>
-                    </div>
-                    <!-- Settings Button -->
-                    <button id="settings-button" class="text-zinc-400 hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Section: Map Layer -->
-            <div class="space-y-2">
-                <label for="map-upload" class="block text-sm font-medium text-zinc-300">Background Map Layer</label>
-                <!-- Updated file input button style -->
-                <input type="file" id="map-upload" accept="image/*" class="block w-full text-sm text-zinc-400
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-md file:border file:border-indigo-500
-                    file:text-sm file:font-semibold
-                    file:bg-transparent file:text-indigo-400
-                    hover:file:bg-indigo-900/30
-                    cursor-pointer
-                ">
-                <!-- Switched to red border button -->
-                <button id="clear-map" class="w-full bg-transparent hover:bg-red-900/20 text-red-400 border border-red-500 py-2 px-4 rounded-md text-sm transition-colors">Clear Map</button>
-            </div>
-
-            <!-- Section: Grid Controls -->
-            <div class="space-y-2 pt-4 border-t border-zinc-700">
-                <h2 class="text-lg font-semibold text-white collapsible-header collapsed" id="grid-header">
-                    <span>Grid Controls</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </h2>
-                <div id="grid-content" class="collapsible-content space-y-3 hidden">
-                    <div class="p-3 bg-zinc-700 rounded-lg space-y-3">
-                        <label for="grid-type" class="block text-sm font-medium text-zinc-300">Grid Type</label>
-                        <select id="grid-type" class="w-full bg-zinc-800 border border-zinc-600 rounded-md px-3 py-2 text-sm">
-                            <option value="none">None</option>
-                            <option value="graph">Graph (Square)</option>
-                            <option value="hex" selected>Hex Grid (Pointy)</option>
-                        </select>
-
-                        <label for="grid-size" class="block text-sm font-medium text-zinc-300">Grid Size (px)</label>
-                        <input type="number" id="grid-size" value="50" min="10" class="w-full bg-zinc-800 border border-zinc-600 rounded-md px-3 py-2 text-sm">
-
-                        <label for="grid-color" class="block text-sm font-medium text-zinc-300">Grid Color</label>
-                        <input type="color" id="grid-color" value="#FFFFFF" class="w-full h-10 p-0">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section: Create Tools -->
-            <div class="space-y-2 pt-4 border-t border-zinc-700">
-                <h2 class="text-lg font-semibold text-white collapsible-header collapsed" id="create-header">
-                    <span>Create</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </h2>
-                <div id="create-content" class="collapsible-content space-y-4 hidden">
-                    <!-- Add Token -->
-                    <div class="p-3 bg-zinc-700 rounded-lg space-y-3">
-                        <h3 class="font-medium">Add Token</h3>
-                        <label for="token-name" class="sr-only">Token Name</label>
-                        <input type="text" id="token-name" placeholder="Token Name" class="w-full bg-zinc-800 border border-zinc-600 rounded-md px-3 py-2 text-sm" value="New Token">
-                        <label for="token-color" class="sr-only">Token Color</label>
-                        <!-- Default value set to blue -->
-                        <input type="color" id="token-color" value="#2563EB"> <!-- This is Tailwind's blue-600 -->
-                        <!-- Updated button style -->
-                        <button id="add-token" class="w-full bg-transparent hover:bg-pink-900/30 text-pink-400 border border-pink-500 py-2 px-4 rounded-md transition-colors">Add Token</button>
-                    </div>
-
-                    <!-- Add Text -->
-                    <div class="p-3 bg-zinc-700 rounded-lg space-y-3">
-                        <h3 class="font-medium">Add Text</h3>
-                        <label for="text-content" class="sr-only">Text Content</label>
-                        <input type="text" id="text-content" placeholder="Text Label" class="w-full bg-zinc-800 border border-zinc-600 rounded-md px-3 py-2 text-sm" value="Hello!">
-                        <!-- Updated button style -->
-                        <button id="add-text" class="w-full bg-transparent hover:bg-blue-900/30 text-blue-400 border border-blue-500 py-2 px-4 rounded-md transition-colors">Add Text</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section: Tools -->
-            <div class="space-y-2 pt-4 border-t border-zinc-700">
-                <h2 class="text-lg font-semibold text-white collapsible-header collapsed" id="tools-header">
-                    <span>Tools</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </h2>
-                <div id="tools-content" class="collapsible-content space-y-4 hidden">
-                    <!-- Dice Roller -->
-                    <div class="p-3 bg-zinc-700 rounded-lg space-y-3">
-                        <h3 class="font-medium">Dice Roller</h3>
-                        <label for="dice-input" class="sr-only">Dice Notation</label>
-                        <input type="text" id="dice-input" placeholder="e.g., 2d20kh1+5" class="w-full bg-zinc-800 border border-zinc-600 rounded-md px-3 py-2 text-sm" value="1d20">
-                        <!-- Updated button style -->
-                        <button id="roll-dice" class="w-full bg-transparent hover:bg-green-900/30 text-green-400 border border-green-500 py-2 px-4 rounded-md transition-colors">Roll Dice</button>
-                        <div id="dice-result" class="text-center text-zinc-300 h-10 p-2 bg-zinc-800 rounded-md overflow-y-auto">
-                            Roll Result
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section: Selected Item Editor (Contextual) -->
-            <div id="editor-panel" class="space-y-4 pt-4 border-t border-zinc-700 hidden">
-                <h2 class="text-lg font-semibold text-white">Edit Selected Item</h2>
-
-                <!-- Token Editor -->
-                <div id="token-editor" class="p-3 bg-zinc-700 rounded-lg space-y-3 hidden">
-                    <label for="token-name-edit" class="block text-sm font-medium text-zinc-300">Token Name</label>
-                    <input type="text" id="token-name-edit" class="w-full bg-zinc-800 border border-zinc-600 rounded-md px-3 py-2 text-sm">
-
-                    <label for="token-color-edit" class="block text-sm font-medium text-zinc-300">Token Color</label>
-                    <input type="color" id="token-color-edit" class="w-full">
-
-                    <!-- Switched to red border button -->
-                    <button id="delete-token" class="w-full bg-transparent hover:bg-red-900/20 text-red-400 border border-red-500 py-2 px-4 rounded-md text-sm transition-colors">Delete Token</button>
-                </div>
-
-                <!-- Text Editor -->
-                <div id="text-editor" class="p-3 bg-zinc-700 rounded-lg space-y-3 hidden">
-                    <label for="text-content-edit" class="block text-sm font-medium text-zinc-300">Text Content</label>
-                    <input type="text" id="text-content-edit" class="w-full bg-zinc-800 border border-zinc-600 rounded-md px-3 py-2 text-sm">
-
-                    <!-- Switched to red border button -->
-                    <button id="delete-text" class="w-full bg-transparent hover:bg-red-900/20 text-red-400 border border-red-500 py-2 px-4 rounded-md text-sm transition-colors">Delete Text</button>
-                </div>
-            </div>
-
-        </aside>
-
-        <!-- Main Canvas Area -->
-        <main class="flex-1 p-4" id="canvas-container">
-            <canvas id="vtt-canvas"></canvas>
-        </main>
-    </div>
-
-    <script type="module" src="../js/tm-app.js"></script>
-    <script type="module" src="../js/tm-profile.js"></script>
-
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-20">
-        <div class="bg-zinc-800 rounded-lg shadow-xl p-6 w-full max-w-md">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-white">Settings</h2>
-                <button id="close-settings-button" class="text-zinc-400 hover:text-white">&times;</button>
-            </div>
-            <div class="space-y-4">
-                <div id="profile-settings" class="space-y-2 pt-4 border-t border-zinc-700">
-                    <h3 class="text-lg font-semibold text-white">Profile</h3>
-                    <div>
-                        <label for="handle-edit-input" class="block text-sm font-medium text-zinc-300">Your Handle</label>
-                        <input type="text" id="handle-edit-input" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm">
-                    </div>
-                    <button id="save-handle-button" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md transition-colors">Save Handle</button>
-                </div>
-                <div class="space-y-2 pt-4 border-t border-zinc-700">
-                     <h3 class="text-lg font-semibold text-white">Application</h3>
-                    <div>
-                        <label for="mode-toggle" class="block text-sm font-medium text-zinc-300">Application Mode</label>
-                        <select id="mode-toggle" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm">
-                            <option value="cloud">Cloud</option>
-                            <option value="local">Local</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="local-user-id" class="block text-sm font-medium text-zinc-300">Local User ID</label>
-                        <input type="text" id="local-user-id" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Profile Modal -->
-    <div id="profile-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-20">
-        <div class="bg-zinc-800 rounded-lg shadow-xl p-6 w-full max-w-md">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-white">Create Your Profile</h2>
-            </div>
-            <div class="space-y-4">
-                <div>
-                    <label for="handle-input" class="block text-sm font-medium text-zinc-300">Choose a Handle</label>
-                    <input type="text" id="handle-input" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm" placeholder="e.g., CaptainAwesome">
-                </div>
-                <button id="save-profile-button" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md transition-colors">Save Profile</button>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
