@@ -3,101 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tangent Matrix VTT - Login</title>
-    <!-- Load Tailwind CSS -->
+    <title>Tangent Matrix VTT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    // Swapped gray for zinc for a mono-dark theme
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         zinc: {
-                            50: '#fafafa',
-                            100: '#f4f4f5',
-                            200: '#e4e4e7',
-                            300: '#d4d4d8',
-                            400: '#a1a1aa',
-                            500: '#71717a',
-                            600: '#52525b',
-                            700: '#3f3f46',
-                            800: '#27272a',
-                            900: '#18181b',
-                            950: '#09090b',
+                            50: '#fafafa', 100: '#f4f4f5', 200: '#e4e4e7', 300: '#d4d4d8',
+                            400: '#a1a1aa', 500: '#71717a', 600: '#52525b', 700: '#3f3f46',
+                            800: '#27272a', 900: '#18181b', 950: '#09090b',
                         },
                     }
                 },
             },
         }
     </script>
-    <link rel="stylesheet" href="css/tm-style.css">
+    <link rel="stylesheet" href="../css/tm-style.css">
 </head>
-<body class="h-full font-sans text-zinc-200 flex items-center justify-center">
+<body class="h-full font-sans text-zinc-200">
 
-    <div id="login-container-wrapper">
-        <div class="login-container">
-            <h1>Tangent Matrix VTT</h1>
-            <button id="google-login">Sign In with Google</button>
-            <div class="other-options" style="margin-top: 1rem; text-align: center;">
-                <a href="#" id="email-login-link" style="display: block; margin-bottom: 0.5rem;">Sign in with Email</a>
-                <a href="#" id="phone-login-link" style="display: block; margin-bottom: 0.5rem;">Sign in with Phone</a>
-                <a href="#" id="anonymous-login-link" style="display: block;">Continue as Guest</a>
+    <!-- This container is hidden by default and was previously used for the login screen -->
+    <div id="login-container-wrapper" class="hidden"></div>
+
+    <!-- Main VTT Application Wrapper -->
+    <div id="vtt-app-wrapper" class="flex h-full w-full">
+        <!-- Main Content Area -->
+        <main class="flex-grow relative bg-zinc-800">
+            <div id="map-container" class="w-full h-full">
+                <!-- Tokens will be rendered here by JavaScript -->
             </div>
-        </div>
+        </main>
+
+        <!-- Sidebar -->
+        <aside class="w-80 bg-zinc-900 flex flex-col p-2">
+            <!-- Header with Controls -->
+            <div class="flex justify-between items-center mb-4 p-2">
+                <h2 class="text-xl font-bold">Controls</h2>
+                <div>
+                    <button id="file-menu-button" class="p-2 rounded hover:bg-zinc-700">File</button>
+                    <div id="file-menu-dropdown" class="absolute hidden bg-zinc-800 rounded shadow-lg mt-2 py-1 z-10">
+                        <a href="#" id="save-button" class="block px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-700">Save Project</a>
+                        <a href="#" id="load-button" class="block px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-700">Load Project</a>
+                    </div>
+                    <button id="settings-button" class="p-2 rounded hover:bg-zinc-700">Settings</button>
+                    <button id="sign-out" class="p-2 rounded hover:bg-zinc-700" style="display: none;">Sign Out</button>
+                </div>
+            </div>
+
+            <!-- Accordion Sections -->
+            <div class="flex-grow overflow-y-auto">
+                <!-- Tokens Section -->
+                <div class="mb-2">
+                    <h3 class="collapsible-header text-lg font-semibold p-2 bg-zinc-800 rounded cursor-pointer">Tokens</h3>
+                    <div class="collapsible-content p-2">
+                        <input type="text" id="token-name" placeholder="Token Name" class="w-full bg-zinc-700 p-2 rounded mb-2">
+                        <button id="add-token" class="w-full bg-blue-600 p-2 rounded hover:bg-blue-700">Add Token</button>
+                        <button id="clear-map" class="w-full bg-red-600 p-2 rounded hover:bg-red-700 mt-2">Clear All</button>
+                    </div>
+                </div>
+                <!-- Chat/Log Section -->
+                <div class="mb-2">
+                    <h3 class="collapsible-header text-lg font-semibold p-2 bg-zinc-800 rounded cursor-pointer">Message Log</h3>
+                    <div id="message-log" class="collapsible-content h-48 bg-zinc-800/50 p-2 overflow-y-scroll mb-2"></div>
+                    <form id="chat-form" class="flex">
+                        <input type="text" id="chat-input" class="flex-grow bg-zinc-700 p-2 rounded-l" placeholder="Type message or /roll...">
+                        <button type="submit" class="bg-indigo-600 p-2 rounded-r hover:bg-indigo-700">Send</button>
+                    </form>
+                </div>
+            </div>
+        </aside>
     </div>
 
-    <!-- Email Modal -->
-    <div id="email-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-20">
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-20">
         <div class="bg-zinc-800 rounded-lg shadow-xl p-6 w-full max-w-md">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-white">Sign In or Sign Up with Email</h2>
-                <button id="close-email-modal" class="text-zinc-400 hover:text-white">&times;</button>
+            <h2 class="text-xl font-bold mb-4">Settings</h2>
+            <div class="mb-4">
+                <label for="mode-toggle" class="block mb-2">Application Mode</label>
+                <select id="mode-toggle" class="w-full bg-zinc-700 p-2 rounded">
+                    <option value="cloud">Cloud</option>
+                    <option value="local">Local</option>
+                </select>
             </div>
-            <div class="space-y-4">
-                <div>
-                    <label for="email-input" class="block text-sm font-medium text-zinc-300">Email</label>
-                    <input type="email" id="email-input" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm">
-                </div>
-                <div>
-                    <label for="password-input" class="block text-sm font-medium text-zinc-300">Password</label>
-                    <input type="password" id="password-input" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm">
-                </div>
-                <div class="flex space-x-4">
-                    <button id="email-signin-button" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md transition-colors">Sign In</button>
-                    <button id="email-signup-button" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition-colors">Sign Up</button>
-                </div>
+            <div class="mb-4">
+                <label for="local-user-id" class="block mb-2">Local User ID</label>
+                <input type="text" id="local-user-id" class="w-full bg-zinc-700 p-2 rounded">
             </div>
-        </div>
-    </div>
-
-    <!-- Phone Modal -->
-    <div id="phone-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-20">
-        <div class="bg-zinc-800 rounded-lg shadow-xl p-6 w-full max-w-md">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-white">Sign In with Phone</h2>
-                <button id="close-phone-modal" class="text-zinc-400 hover:text-white">&times;</button>
-            </div>
-            <div class="space-y-4">
-                <div>
-                    <label for="phone-number-input" class="block text-sm font-medium text-zinc-300">Phone Number</label>
-                    <input type="tel" id="phone-number-input" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm">
-                </div>
-                <button id="send-code-button" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md transition-colors">Send Verification Code</button>
-                <div id="recaptcha-container"></div>
-                <div>
-                    <label for="verification-code-input" class="block text-sm font-medium text-zinc-300">Verification Code</label>
-                    <input type="text" id="verification-code-input" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm">
-                </div>
-                <button id="verify-code-button" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition-colors">Verify Code</button>
-            </div>
+            <button id="close-settings-button" class="w-full bg-indigo-600 p-2 rounded hover:bg-indigo-700">Close</button>
         </div>
     </div>
     
-    <script type="module" src="js/tm-app.js"></script>
-    <script type="module" src="js/tm-auth.js"></script>
-
+    <script type="module" src="../js/tm-app.js"></script>
 </body>
 </html>

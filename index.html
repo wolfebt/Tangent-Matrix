@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tangent Matrix VTT</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
     <style>
         :root {
             --bg-main: #121212;
@@ -49,10 +48,6 @@
             transition: all 0.2s ease; backdrop-filter: blur(4px);
         }
         .auth-button:hover { background-color: var(--btn-primary-hover-bg); border-color: var(--border-focus); }
-        #firebaseui-auth-container {
-            background-color: rgba(20, 20, 20, 0.6); padding: 2rem; border-radius: 0.5rem; backdrop-filter: blur(5px);
-            border: 1px solid var(--border-main); width: 100%; max-width: 24rem;
-        }
     </style>
 </head>
 <body class="bg-gray-900 flex flex-col items-center justify-center min-h-screen">
@@ -63,21 +58,14 @@
         <h1 class="brand-heading text-6xl md:text-8xl text-white">Tangent Matrix</h1>
         <p class="brand-subtitle text-lg md:text-xl text-gray-300 mt-2 mb-8">Your Lightweight Virtual Tabletop</p>
 
-        <div id="firebaseui-auth-container" class="mt-4"></div>
-
-        <nav id="navigation-menu" class="hidden mt-12">
+        <nav id="navigation-menu" class="mt-12">
             <a href="pages/Tangent-Matrix.html" class="nav-button text-lg py-3 px-6">Enter VTT</a>
         </nav>
     </main>
 
-    <!-- Firebase v8 Compatibility Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth-compat.js"></script>
-
-    <!-- FirebaseUI Script -->
-    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
-
-    <!-- Your App's Auth Script -->
-    <script defer src="js/tm-auth-ui.js"></script>
+    <script>
+        // Automatically redirect to the main application
+        window.location.href = 'pages/Tangent-Matrix.html';
+    </script>
 </body>
 </html>
