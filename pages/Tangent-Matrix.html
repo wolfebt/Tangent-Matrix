@@ -192,7 +192,19 @@
         </main>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { firebaseConfig } from "../js/firebase-config.js";
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+    </script>
     <script type="module" src="../js/tm-app.js"></script>
+    <script type="module" src="../js/tm-profile.js"></script>
 
     <!-- Settings Modal -->
     <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-20">
@@ -213,6 +225,22 @@
                     <label for="local-user-id" class="block text-sm font-medium text-zinc-300">Local User ID</label>
                     <input type="text" id="local-user-id" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm">
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-20">
+        <div class="bg-zinc-800 rounded-lg shadow-xl p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-white">Create Your Profile</h2>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="handle-input" class="block text-sm font-medium text-zinc-300">Choose a Handle</label>
+                    <input type="text" id="handle-input" class="w-full bg-zinc-700 border border-zinc-600 rounded-md px-3 py-2 text-sm" placeholder="e.g., CaptainAwesome">
+                </div>
+                <button id="save-profile-button" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md transition-colors">Save Profile</button>
             </div>
         </div>
     </div>
