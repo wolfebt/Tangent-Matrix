@@ -1,8 +1,6 @@
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-
-const auth = getAuth();
-const database = getDatabase();
+import { auth, database } from './tm-firebase-config.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { ref, get, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 const profileModal = document.getElementById('profile-modal');
 const handleInput = document.getElementById('handle-input');
