@@ -32,7 +32,7 @@ const uiConfig = {
   signInFlow: 'popup',
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.EmailAuthProvider.PROVIDER_ID
+    firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
   ],
 };
 
@@ -41,7 +41,7 @@ auth.onAuthStateChanged((user) => {
   if (user) {
     firebaseuiContainer.classList.add('hidden');
     navigationMenu.classList.remove('hidden');
-    authContainer.innerHTML = `<div class="flex items-center gap-4"><span class="text-sm text-gray-300">${user.displayName || user.email}</span><button id="${logoutButtonId}" class="auth-button">Logout</button></div>`;
+    authContainer.innerHTML = `<div class="flex items-center gap-4"><span class="text-sm text-gray-300">${user.isAnonymous ? 'Guest' : (user.displayName || user.email)}</span><button id="${logoutButtonId}" class="auth-button">Logout</button></div>`;
     document.getElementById(logoutButtonId).addEventListener('click', () => {
       auth.signOut();
     });
