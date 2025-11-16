@@ -1,108 +1,95 @@
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, RecaptchaVerifier, signInWithPhoneNumber, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInAnonymously,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
 const auth = getAuth();
 
-const googleSigninOptionButton = document.getElementById('google-signin-option');
-const anonymousSigninOptionButton = document.getElementById('anonymous-signin-option');
-const phoneSigninOptionButton = document.getElementById('phone-signin-option');
-const emailSigninOptionButton = document.getElementById('email-signin-option');
-
-const phoneAuthContainer = document.getElementById('phone-auth-container');
-const emailPasswordContainer = document.getElementById('email-password-container');
-
-const phoneNumberInput = document.getElementById('phone-number');
-const sendVerificationCodeButton = document.getElementById('send-verification-code');
-const recaptchaContainer = document.getElementById('recaptcha-container');
-const verificationCodeInput = document.getElementById('verification-code');
-const verifyCodeButton = document.getElementById('verify-code');
-const emailSigninButton = document.getElementById('email-signin');
-const emailSignupButton = document.getElementById('email-signup');
-const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password');
-
-// Option buttons
-googleSigninOptionButton.addEventListener('click', () => {
+// --- Google Sign-In ---
+export const handleGoogleSignIn = () => {
   const provider = new GoogleAuthProvider();
-  signInWithPopup(auth, provider)
-    .catch((error) => {
-      console.error(error);
-    });
-});
+  signInWithPopup(auth, provider).catch((error) => {
+    console.error('Google Sign-In Error:', error);
+    alert(`Google Sign-In Failed: ${error.message}`);
+  });
+};
 
-anonymousSigninOptionButton.addEventListener('click', () => {
-  signInAnonymously(auth)
-    .catch((error) => {
-      console.error(error);
-    });
-});
+// --- Anonymous Sign-In ---
+export const handleAnonymousSignIn = () => {
+  signInAnonymously(auth).catch((error) => {
+    console.error('Anonymous Sign-In Error:', error);
+    alert(`Anonymous Sign-In Failed: ${error.message}`);
+  });
+};
 
-phoneSigninOptionButton.addEventListener('click', () => {
-  phoneAuthContainer.classList.remove('hidden');
-  emailPasswordContainer.classList.add('hidden');
-});
+// --- Email/Password Sign-Up ---
+export const handleEmailSignUp = (email, password) => {
+  createUserWithEmailAndPassword(auth, email, password).catch((error) => {
+    console.error('Email Sign-Up Error:', error);
+    alert(`Email Sign-Up Failed: ${error.message}`);
+  });
+};
 
-emailSigninOptionButton.addEventListener('click', () => {
-  emailPasswordContainer.classList.remove('hidden');
-  phoneAuthContainer.classList.add('hidden');
-});
+// --- Email/Password Sign-In ---
+export const handleEmailSignIn = (email, password) => {
+  signInWithEmailAndPassword(auth, email, password).catch((error) => {
+    console.error('Email Sign-In Error:', error);
+    alert(`Email Sign-In Failed: ${error.message}`);
+  });
+};
+
+// --- Phone Sign-In ---
+export const initializeRecaptcha = () => {
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'invisible',
+        'callback': (response) => {
+          // reCAPTCHA solved, allow signInWithPhoneNumber.
+          console.log("reCAPTCHA solved");
+        }
+      }
+    );
+  }
+};
 
 
-// Phone Sign-in
-window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
-  'size': 'invisible'
-}, auth);
-
-sendVerificationCodeButton.addEventListener('click', () => {
-  const phoneNumber = phoneNumberInput.value;
+export const handlePhoneSignIn = (phoneNumber) => {
   const appVerifier = window.recaptchaVerifier;
   signInWithPhoneNumber(auth, phoneNumber, appVerifier)
     .then((confirmationResult) => {
-      // SMS sent. Prompt user to type the code from the message, then sign the
-      // user in with confirmationResult.confirm(code).
       window.confirmationResult = confirmationResult;
-    }).catch((error) => {
-      // Error; SMS not sent
-      console.error(error);
-    });
-});
-
-verifyCodeButton.addEventListener('click', () => {
-  const code = verificationCodeInput.value;
-  confirmationResult.confirm(code).then((result) => {
-    // User signed in successfully.
-    const user = result.user;
-    // ...
-  }).catch((error) => {
-    // User couldn't sign in (bad verification code?)
-    console.error(error);
-  });
-});
-
-
-// Email/Password Sign-up
-emailSignupButton.addEventListener('click', () => {
-  const email = emailInput.value;
-  const password = passwordInput.value;
-  createUserWithEmailAndPassword(auth, email, password)
+      alert('Verification code sent to your phone.');
+    })
     .catch((error) => {
-      console.error(error);
+      console.error('Phone Sign-In Error:', error);
+      alert(`Phone Sign-In Failed: ${error.message}`);
     });
-});
+};
 
-// Email/Password Sign-in
-emailSigninButton.addEventListener('click', () => {
-  const email = emailInput.value;
-  const password = passwordInput.value;
-  signInWithEmailAndPassword(auth, email, password)
-    .catch((error) => {
-      console.error(error);
-    });
-});
-
-// Auth state observer
-onAuthStateChanged(auth, user => {
-  if (user) {
-    // User is signed in.
-    window.location.href = 'pages/Tangent-Matrix.html';
+export const verifyPhoneCode = (code) => {
+  if (window.confirmationResult) {
+    window.confirmationResult.confirm(code)
+      .catch((error) => {
+        console.error('Phone Verification Error:', error);
+        alert(`Verification Failed: ${error.message}`);
+      });
+  } else {
+    alert('Please send the verification code first.');
   }
-});
+};
+
+
+// --- Sign Out ---
+export const handleSignOut = () => {
+  signOut(auth).catch((error) => {
+    console.error('Sign Out Error:', error);
+    alert(`Sign Out Failed: ${error.message}`);
+  });
+};
