@@ -56,23 +56,31 @@
         }
     </style>
 </head>
-<body class="flex flex-col h-screen relative">
-    <header id="auth-container"></header>
-    <main class="flex-grow flex flex-col items-center justify-start text-center p-4 pt-20">
-        <div class="mb-8">
-            <h1 class="brand-heading text-6xl md:text-8xl">Tangent Matrix VTT</h1>
-        </div>
-        <div id="dynamic-content-container" class="w-full max-w-md flex flex-col items-center gap-6">
-            <div id="firebaseui-auth-container"></div>
-            <nav id="navigation-menu" class="w-full grid grid-cols-1 gap-4 hidden">
-                <a href="pages/Tangent-Matrix.html" class="nav-button block w-full py-4 rounded-lg text-2xl">Launch VTT</a>
-            </nav>
-        </div>
-    </main>
-    <footer></footer>
-    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-auth-compat.js"></script>
-    <script src="js/tm-auth-ui.js" defer></script>
+<body>
+  <div id="login-container">
+    <h1>Welcome to Tangent Matrix VTT</h1>
+    <div id="login-options">
+      <button id="google-signin-btn" class="primary-signin-btn">Sign in with Google</button>
+      <div class="secondary-login-options">
+        <a href="#" id="anonymous-signin-link">Sign in Anonymously</a> |
+        <a href="#" id="phone-signin-link">Sign in with Phone</a> |
+        <a href="#" id="email-signin-link">Sign in with Email</a>
+      </div>
+    </div>
+    <div id="phone-auth-container" class="hidden">
+      <input type="tel" id="phone-number" placeholder="Phone number">
+      <button id="send-verification-code-btn">Send Verification Code</button>
+      <div id="recaptcha-container"></div>
+      <input type="text" id="verification-code" placeholder="Verification code">
+      <button id="verify-code-btn">Verify Code</button>
+    </div>
+    <div id="email-password-container" class="hidden">
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Password">
+      <button id="email-signin-btn">Sign in</button>
+      <button id="email-signup-btn">Sign up</button>
+    </div>
+  </div>
+  <script type="module" src="js/tm-login-ui.js"></script>
 </body>
 </html>
