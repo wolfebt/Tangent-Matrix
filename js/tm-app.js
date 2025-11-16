@@ -71,4 +71,11 @@ const initializeApp = () => {
 };
 
 // Start the application
-initializeApp();
+onAuthStateChanged(auth, user => {
+  if (user) {
+    initializeApp(user);
+  } else {
+    // User is signed out, redirect to login page.
+    window.location.href = '../index.html';
+  }
+});
