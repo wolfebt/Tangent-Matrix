@@ -178,13 +178,24 @@ const initializeVTTEventListeners = (user) => {
     }
   });
 
-  // Add event listeners for collapsible headers
-  const headers = document.querySelectorAll('.collapsible-header');
-  headers.forEach(header => {
+  // Add event listeners for collapsible headers for "one at a time" accordion behavior
+  const allHeaders = document.querySelectorAll('.collapsible-header');
+  allHeaders.forEach(header => {
     header.addEventListener('click', () => {
-        const content = header.nextElementSibling;
-        content.classList.toggle('hidden');
-        header.classList.toggle('collapsed');
+      const content = header.nextElementSibling;
+      const isCollapsed = header.classList.contains('collapsed');
+
+      // First, close all accordions
+      allHeaders.forEach(h => {
+        h.classList.add('collapsed');
+        h.nextElementSibling.classList.add('hidden');
+      });
+
+      // Then, if the clicked one was collapsed, open it
+      if (isCollapsed) {
+        header.classList.remove('collapsed');
+        content.classList.remove('hidden');
+      }
     });
   });
 
