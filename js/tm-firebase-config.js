@@ -2,15 +2,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBG1JcR0__3z9BJ9huv3CbJThTe3NL8i3c",
-  authDomain: "tangent-matrix.firebaseapp.com",
-  projectId: "tangent-matrix",
-  storageBucket: "tangent-matrix.firebasestorage.app",
-  messagingSenderId: "305943116304",
-  appId: "1:305943116304:web:7b6b932f7c7d7a1a8ba895",
-  measurementId: "G-2Z9VK47NEE"
+  apiKey: "AIzaSyAMpS56HSVunbo4PxPOFHAm9pFq_pXEDM8",
+  authDomain: "tangentsffrpg-db.firebaseapp.com",
+  projectId: "tangentsffrpg-db",
+  storageBucket: "tangentsffrpg-db.firebasestorage.app",
+  messagingSenderId: "583360037097",
+  appId: "1:583360037097:web:2ea3f057bf51d54fd8b078",
+  measurementId: "G-JVE9ZMKSRL"
 };
 
 // Initialize Firebase
@@ -18,4 +17,4 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-export { auth, database };
+export { auth, database, firebaseConfig };
