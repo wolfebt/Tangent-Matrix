@@ -1,47 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tangent Matrix VTT - Login</title>
-  <link rel="stylesheet" href="css/tm-style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tangent Matrix VTT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-section: #2d2d2d;
+            --text-light: #e0e0e0;
+            --text-subtle: #a0a0a0;
+            --btn-primary-bg: rgba(255, 255, 255, 0.1);
+            --btn-primary-hover-bg: rgba(255, 255, 255, 0.2);
+            --border-main: #616161;
+            --border-focus: #eeeeee;
+            --font-body: 'Trebuchet MS', Helvetica, sans-serif;
+            --font-display: 'Trebuchet MS', Helvetica, sans-serif;
+        }
+        body {
+            background-image: url('assets/images/background.png');
+            background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
+            color: var(--text-light); font-family: var(--font-body);
+        }
+        .brand-heading {
+            font-family: var(--font-display); font-weight: 700; letter-spacing: 0.1em;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 4px 4px 8px rgba(0,0,0,0.7);
+        }
+        .brand-subtitle { text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px rgba(0,0,0,0.5); }
+        .nav-button {
+            background-color: transparent;
+            border: none;
+            box-shadow: 0 0 0 1px black, 0 0 0 2px white;
+            color: var(--text-light);
+            font-family: var(--font-display); font-weight: 700; text-transform: uppercase; transition: all 0.3s ease;
+            text-shadow: 2px 2px 4px #000;
+            backdrop-filter: blur(5px);
+        }
+        .nav-button:hover {
+            background-color: rgba(0, 0, 0, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 0 0 1px black, 0 0 0 2px white, 0 0 25px rgba(0, 0, 0, 0.9);
+        }
+        #auth-container { position: absolute; top: 1rem; right: 1rem; z-index: 50; }
+        .auth-button {
+            background-color: rgba(30,30,30,0.7); border: 1px solid #888; color: var(--text-light); padding: 0.5rem 1rem;
+            border-radius: 0.375rem; font-family: var(--font-body); font-weight: 700; text-transform: uppercase;
+            transition: all 0.2s ease; backdrop-filter: blur(4px);
+        }
+        .auth-button:hover { background-color: var(--btn-primary-hover-bg); border-color: var(--border-focus); }
+        #firebaseui-auth-container {
+            background-color: rgba(20, 20, 20, 0.6); padding: 2rem; border-radius: 0.5rem; backdrop-filter: blur(5px);
+            border: 1px solid var(--border-main); width: 100%; max-width: 24rem;
+        }
+    </style>
 </head>
-<body>
-  <div id="login-container">
-    <h1>Welcome to Tangent Matrix VTT</h1>
-    <div id="login-options">
-      <button id="google-signin-option">Sign in with Google</button>
-      <button id="anonymous-signin-option">Sign in Anonymously</button>
-      <button id="phone-signin-option">Sign in with Phone</button>
-      <button id="email-signin-option">Sign in with Email</button>
-    </div>
-    <div id="phone-auth-container" class="hidden">
-      <input type="tel" id="phone-number" placeholder="Phone number">
-      <button id="send-verification-code">Send Verification Code</button>
-      <div id="recaptcha-container"></div>
-      <input type="text" id="verification-code" placeholder="Verification code">
-      <button id="verify-code">Verify Code</button>
-    </div>
-    <div id="email-password-container" class="hidden">
-      <input type="email" id="email" placeholder="Email">
-      <input type="password" id="password" placeholder="Password">
-      <button id="email-signin">Sign in</button>
-      <button id="email-signup">Sign up</button>
-    </div>
-  </div>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously, RecaptchaVerifier, signInWithPhoneNumber, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-    import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-    import { firebaseConfig } from "./js/firebase-config.js";
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const database = getDatabase(app);
-
-    // Your auth logic here, using the imported functions.
-  </script>
-  <script type="module" src="js/tm-auth.js"></script>
+<body class="flex flex-col h-screen relative">
+    <header id="auth-container"></header>
+    <main class="flex-grow flex flex-col items-center justify-start text-center p-4 pt-20">
+        <div class="mb-8">
+            <h1 class="brand-heading text-6xl md:text-8xl">Tangent Matrix VTT</h1>
+        </div>
+        <div id="dynamic-content-container" class="w-full max-w-md flex flex-col items-center gap-6">
+            <div id="firebaseui-auth-container"></div>
+            <nav id="navigation-menu" class="w-full grid grid-cols-1 gap-4 hidden">
+                <a href="pages/Tangent-Matrix.html" class="nav-button block w-full py-4 rounded-lg text-2xl">Launch VTT</a>
+            </nav>
+        </div>
+    </main>
+    <footer></footer>
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-auth-compat.js"></script>
+    <script src="js/tm-auth-ui.js" defer></script>
 </body>
 </html>
